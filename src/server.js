@@ -10,8 +10,13 @@ app.use(bodyParser.json());
 const PUBLIC_URL = process.env.PUBLIC_URL;
 const BOT_TOKEN = process.env.BOT_TOKEN;
 
+// Health check
+app.get("/", (req, res) => {
+  res.send("Twitch Bot is running!");
+});
+
 // Telegram webhook
-app.use(bot.webhookCallback(`/telegram/${BOT_TOKEN}`));
+app.use(bot.webhookCallback("/telegram"));
 
 // Twitch webhook
 app.post("/webhook", async (req, res) => {
@@ -33,7 +38,17 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
   console.log(`Webhook server running on port ${PORT}`);
   
-  // Устанавливаем Telegram webhook
-  await bot.telegram.setWebhook(`${PUBLIC_URL}/telegram/${BOT_TOKEN}`);
-  console.log("Telegram webhook установлен");
+  if (PUBLIC_URL && PUBLIC_URL !== 'https://your-app-name.onrender.com') {
+    try {
+      await bot.telegram.setWebhook(`${PUBLIC_URL}/telegram`);
+      console.log(`✅ Telegram webhook установлен: ${PUBLIC_URL}/telegram`);
+      
+      const webhookInfo = await bot.telegram.getWebhookInfo();
+      console.log(`Webhook info:`, webhookInfo);
+    } catch (error) {
+      console.error('❌ Ошибка установки webhook:', error.message);
+    }
+  } else {
+    console.log('⚠️ PUBLIC_URL не установлен! Установите его в Environment Variables на Render');
+  }
 });
