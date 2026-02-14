@@ -37,7 +37,7 @@ export async function getAppToken() {
 }
 
 export async function subscribeToStreamer(userId) {
-  console.log(`\n📡 === ПОДПИСКА НА TWITCH ===");
+  console.log("\n📡 === ПОДПИСКА НА TWITCH ===");
   console.log(`User ID: ${userId}`);
   console.log(`Webhook: ${PUBLIC_URL}/webhook`);
   
@@ -87,7 +87,7 @@ export async function handleStreamOnline(data) {
     const channelId = streamers.get(userId);
     console.log(`💬 Канал для уведомления: ${channelId}`);
     console.log(`📊 Всего зарегистрировано: ${streamers.size}`);
-    console.log(`📋 Список:`, Array.from(streamers.entries()));
+    console.log("📋 Список:", Array.from(streamers.entries()));
 
     if (!channelId) {
       console.log("⚠️ Канал не найден для этого стримера");

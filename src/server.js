@@ -15,9 +15,9 @@ console.log("🌐 Express сервер инициализирован");
 // Логирование всех запросов
 app.use((req, res, next) => {
   console.log(`\n📥 ${req.method} ${req.path}`);
-  console.log(`Headers:`, req.headers);
+  console.log("Headers:", req.headers);
   if (req.body && Object.keys(req.body).length > 0) {
-    console.log(`Body:`, JSON.stringify(req.body, null, 2));
+    console.log("Body:", JSON.stringify(req.body, null, 2));
   }
   next();
 });
@@ -60,18 +60,18 @@ app.post("/webhook", async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
-  console.log(`\n🚀 === СЕРВЕР ЗАПУЩЕН ===");
+  console.log("\n🚀 === СЕРВЕР ЗАПУЩЕН ===");
   console.log(`🌐 Порт: ${PORT}`);
   console.log(`📡 PUBLIC_URL: ${PUBLIC_URL}`);
   
   if (PUBLIC_URL && PUBLIC_URL !== 'https://your-app-name.onrender.com') {
     try {
-      console.log(`\n🔧 Устанавливаю Telegram webhook...`);
+      console.log("\n🔧 Устанавливаю Telegram webhook...");
       await bot.telegram.setWebhook(`${PUBLIC_URL}/telegram`);
       console.log(`✅ Telegram webhook установлен: ${PUBLIC_URL}/telegram`);
       
       const webhookInfo = await bot.telegram.getWebhookInfo();
-      console.log(`📊 Webhook info:`, webhookInfo);
+      console.log("📊 Webhook info:", webhookInfo);
     } catch (error) {
       console.error('❌ Ошибка установки webhook:', error.message);
     }
@@ -79,7 +79,7 @@ app.listen(PORT, async () => {
     console.log('⚠️ PUBLIC_URL не установлен! Установите его в Environment Variables на Render');
   }
   
-  console.log(`\n✅ Бот готов к работе!`);
+  console.log("\n✅ Бот готов к работе!");
   console.log(`🔗 Откройте: ${PUBLIC_URL || 'http://localhost:' + PORT}`);
-  console.log(`🚀 === ИНИЦИАЛИЗАЦИЯ ЗАВЕРШЕНА ===\n`);
+  console.log("🚀 === ИНИЦИАЛИЗАЦИЯ ЗАВЕРШЕНА ===\n");
 });
