@@ -1,6 +1,7 @@
 import "dotenv/config";
 import axios from "axios";
 import { bot } from "./bot.js";
+import fs from "fs";
 
 const CLIENT_ID = process.env.TWITCH_CLIENT_ID;
 const CLIENT_SECRET = process.env.TWITCH_CLIENT_SECRET;
@@ -9,6 +10,37 @@ const PUBLIC_URL = process.env.PUBLIC_URL;
 let accessToken;
 
 export const streamers = new Map();
+
+const STORAGE_FILE = "./streamers.json";
+
+// Загрузка стримеров из файла
+function loadStreamers() {
+  try {
+    if (fs.existsSync(STORAGE_FILE)) {
+      const data = fs.readFileSync(STORAGE_FILE, "utf8");
+      const saved = JSON.parse(data);
+      for (const [userId, channel] of Object.entries(saved)) {
+        streamers.set(userId, channel);
+      }
+      console.log(`📂 Загружено стримеров: ${streamers.size}`);
+    }
+  } catch (error) {
+    console.error("❌ Ошибка загрузки:", error.message);
+  }
+}
+
+// Сохранение стримеров в файл
+function saveStreamers() {
+  try {
+    const data = Object.fromEntries(streamers);
+    fs.writeFileSync(STORAGE_FILE, JSON.stringify(data, null, 2));
+    console.log(`💾 Сохранено стримеров: ${streamers.size}`);
+  } catch (error) {
+    console.error("❌ Ошибка сохранения:", error.message);
+  }
+}
+
+loadStreamers();
 
 console.log("🎮 Twitch модуль инициализирован");
 console.log(`📡 Webhook URL: ${PUBLIC_URL}/webhook`);
@@ -62,6 +94,7 @@ export async function subscribeToStreamer(userId) {
       },
     );
     console.log("✅ Подписка создана:", response.data);
+    saveStreamers();
     console.log("📡 === ПОДПИСКА ЗАВЕРШЕНА ===\n");
   } catch (error) {
     console.error("❌ Ошибка подписки:", error.response?.data || error.message);
